@@ -1,0 +1,19 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group 'pochka15'
+version '1.0-SNAPSHOT'
+sourceCompatibility = 11
+mainClassName = 'pochka15.Main'
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.google.code.gson:gson:+'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
