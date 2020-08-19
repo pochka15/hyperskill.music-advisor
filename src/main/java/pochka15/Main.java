@@ -54,9 +54,9 @@ public class Main {
     }
 
     private static String clientIdFromCmd() {
+        System.out.println("Please enter your app's public client id (see https://developer.spotify.com/dashboard/ for more info):");
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         try {
-            System.out.println("Please enter your app's public client id (see https://developer.spotify.com/dashboard/ for more info):");
             return reader.readLine();
         } catch (IOException e) {
             e.printStackTrace();

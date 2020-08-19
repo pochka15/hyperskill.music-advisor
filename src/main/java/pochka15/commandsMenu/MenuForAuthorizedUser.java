@@ -58,10 +58,10 @@ public class MenuForAuthorizedUser {
 
     public void enter(AuthorizedClient client) {
         System.out.print("> ");
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String commandName = "";
         String commandArgument = "";
-        try {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        try  {
             final String[] split = br.readLine().split(" ", 2);
             commandName = split[0];
             if (split.length > 1)

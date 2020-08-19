@@ -36,8 +36,8 @@ public class EntryMenu {
 
     public void enter() {
         System.out.print("> ");
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String commandName = "";
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         try {
             commandName = br.readLine().split(" ")[0];
         } catch (IOException e) {
