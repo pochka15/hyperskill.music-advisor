@@ -12,4 +12,8 @@ I is a [hyperskill.org] project that was made to learn how to work with spotify'
 ```
 Hope it works 😅
 
+## Workflow example
+
+![screenshot](images/screenShot.png)
+
 [hyperskill.org]: https://hyperskill.org/
