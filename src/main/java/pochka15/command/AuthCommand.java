@@ -1,7 +1,7 @@
 package pochka15.command;
 
+import pochka15.authorization.AuthorizationFail;
 import pochka15.authorization.AuthorizationPoint;
-import pochka15.authorization.AuthorizedClient;
 import pochka15.commandsMenu.MenuForAuthorizedUser;
 
 import java.util.function.Consumer;
@@ -29,10 +29,10 @@ public class AuthCommand implements Consumer<String> {
      */
     @Override
     public void accept(String argument) {
-        AuthorizedClient client = authPoint.getAuthorizedClient(clientId);
-        if (!client.token().isBlank())
-            menuForAuthorizedUser.enter(client);
-        else
-            System.out.println("incorrect token obtained");
+        try {
+            menuForAuthorizedUser.enter(authPoint.getAuthorizedClient(clientId));
+        } catch (AuthorizationFail authorizationFail) {
+            System.out.println("Authorization fail\nExiting!");
+        }
     }
 }

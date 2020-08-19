@@ -3,7 +3,9 @@ package pochka15.authorization;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -22,7 +24,11 @@ public class AuthorizationPoint {
         this.authCodeSource = authCodeSource;
     }
 
-    public AuthorizedClient getAuthorizedClient(String clientId) {
+    /**
+     * @param clientId the id of the client that will be authorized
+     * @throws AuthorizationFail if something went wrong during the Oauth2 authorization
+     */
+    public AuthorizedClient getAuthorizedClient(String clientId) throws AuthorizationFail {
         final String uri = accessServerPath +
             "/authorize?" +
             "client_id=" + clientId +
@@ -34,22 +40,27 @@ public class AuthorizationPoint {
                                "making http request for access_token...\n" +
                                "Success!");
         final String responseText = responseBodyFromTokenRequest(receivedCode, clientId);
-        final JsonElement accessToken = JsonParser.parseString(responseText).getAsJsonObject().get("access_token");
-        return new AuthorizedClient(accessToken == null ? "" : accessToken.getAsString());
+        try {
+            final JsonElement accessToken = JsonParser.parseString(responseText).getAsJsonObject().get("access_token");
+            return new AuthorizedClient(accessToken.getAsString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new AuthorizationFail("Couldn't parse access token from the response");
+        }
     }
 
     /**
      * @return response body from the request for the "authorization code" (See Oauth2 authorization using "authorization code")
      */
     private String responseBodyFromTokenRequest(String code, String clientId) {
-        String secretCode = "Not today";
-//        System.out.println("Enter the secret code");
-//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-//        try {
-//            secretCode = br.readLine();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        String secretCode = "";
+        System.out.println("Enter the secret code");
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            secretCode = br.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         HttpRequest request = HttpRequest.newBuilder()
             .header("Content-Type", "application/x-www-form-urlencoded")
             .header("Authorization", "Basic " + Base64.getEncoder()

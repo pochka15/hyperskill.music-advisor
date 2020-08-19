@@ -8,7 +8,6 @@ version '1.0-SNAPSHOT'
 sourceCompatibility = 11
 mainClassName = 'pochka15.Main'
 
-
 repositories {
     mavenCentral()
 }
@@ -16,4 +15,13 @@ repositories {
 dependencies {
     compile 'com.google.code.gson:gson:+'
     testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class' : 'advisor.Main'
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
