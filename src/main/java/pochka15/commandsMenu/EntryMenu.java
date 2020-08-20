@@ -26,6 +26,8 @@ public class EntryMenu {
             "categories", commandThatNeedsAuthorization.andThen(s -> enter()),
             "featured", commandThatNeedsAuthorization.andThen(s -> enter()),
             "playlists", commandThatNeedsAuthorization.andThen(s -> enter()),
+            "help", ((Consumer<String>) s -> availableCommands().forEach(
+                (commandName, consumer) -> System.out.println(commandName))).andThen(s -> enter()),
 
 //            Commands that just execute
             "exit", args -> {
@@ -35,6 +37,7 @@ public class EntryMenu {
     }
 
     public void enter() {
+        System.out.println("\nEnter \"help\" to see all the available commands");
         System.out.print("> ");
         String commandName = "";
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -49,5 +52,9 @@ public class EntryMenu {
             System.out.println("Unknown command entered");
             enter();
         }
+    }
+
+    private Map<String, Consumer<String>> availableCommands() {
+        return availableCommands;
     }
 }

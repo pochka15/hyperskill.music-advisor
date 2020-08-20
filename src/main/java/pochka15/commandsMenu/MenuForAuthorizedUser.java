@@ -50,18 +50,28 @@ public class MenuForAuthorizedUser {
             "next", new EntersThisMenuAfterExecution(
                 ((argument, authorizedClient1) -> textPagesPrinter.printNextPage())),
 
+            "help", new EntersThisMenuAfterExecution(
+                ((argument, client) -> availableCommands()
+                    .forEach((name, consumer) -> System.out.println(name)))),
+
+
 //            Commands that just execute
             "exit", (argument, authorizedClient1) -> {
             }
         );
     }
 
+    private Map<String, CommandAvailableForAuthorizedClient> availableCommands() {
+        return availableCommands;
+    }
+
     public void enter(AuthorizedClient client) {
+        System.out.println("\nEnter \"help\" to see all the available commands");
         System.out.print("> ");
         String commandName = "";
         String commandArgument = "";
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        try  {
+        try {
             final String[] split = br.readLine().split(" ", 2);
             commandName = split[0];
             if (split.length > 1)

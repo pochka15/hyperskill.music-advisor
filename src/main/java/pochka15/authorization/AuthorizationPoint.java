@@ -55,6 +55,7 @@ public class AuthorizationPoint {
     private String responseBodyFromTokenRequest(String code, String clientId) {
         String secretCode = "";
         System.out.println("Enter the secret code");
+        System.out.print("> ");
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         try {
             secretCode = br.readLine();
