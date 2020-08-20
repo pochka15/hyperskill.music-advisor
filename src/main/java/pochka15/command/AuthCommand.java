@@ -13,13 +13,16 @@ public class AuthCommand implements Consumer<String> {
     private final AuthorizationPoint authPoint;
     private final MenuForAuthorizedUser menuForAuthorizedUser;
     private final String clientId;
+    private final String clientSecret;
 
     public AuthCommand(AuthorizationPoint authPoint,
                        MenuForAuthorizedUser menuForAuthorizedUser,
-                       String clientId) {
+                       String clientId,
+                       String clientSecret) {
         this.authPoint = authPoint;
         this.menuForAuthorizedUser = menuForAuthorizedUser;
         this.clientId = clientId;
+        this.clientSecret = clientSecret;
     }
 
     /**
@@ -30,7 +33,7 @@ public class AuthCommand implements Consumer<String> {
     @Override
     public void accept(String argument) {
         try {
-            menuForAuthorizedUser.enter(authPoint.getAuthorizedClient(clientId));
+            menuForAuthorizedUser.enter(authPoint.getAuthorizedClient(clientId, clientSecret));
         } catch (AuthorizationFail authorizationFail) {
             System.out.println("Authorization fail\nExiting!");
         }

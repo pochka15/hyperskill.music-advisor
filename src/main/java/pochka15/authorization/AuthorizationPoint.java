@@ -19,16 +19,17 @@ public class AuthorizationPoint {
     private final URI accessServerPath;
     private final AuthCodeSource authCodeSource;
 
-    public AuthorizationPoint(URI accessServerPath, AuthCodeSource authCodeSource) {
+    public AuthorizationPoint(AuthCodeSource authCodeSource, URI accessServerPath) {
         this.accessServerPath = accessServerPath;
         this.authCodeSource = authCodeSource;
     }
 
     /**
      * @param clientId the id of the client that will be authorized
+     * @param secretCode the client's secret code to access spotify's api
      * @throws AuthorizationFail if something went wrong during the Oauth2 authorization
      */
-    public AuthorizedClient getAuthorizedClient(String clientId) throws AuthorizationFail {
+    public AuthorizedClient getAuthorizedClient(String clientId, String secretCode) throws AuthorizationFail {
         final String uri = accessServerPath +
             "/authorize?" +
             "client_id=" + clientId +
@@ -39,7 +40,7 @@ public class AuthorizationPoint {
         System.out.println("code received\n" +
                                "making http request for access_token...\n" +
                                "Success!");
-        final String responseText = responseBodyFromTokenRequest(receivedCode, clientId);
+        final String responseText = responseBodyFromTokenRequest(receivedCode, clientId, secretCode);
         try {
             final JsonElement accessToken = JsonParser.parseString(responseText).getAsJsonObject().get("access_token");
             return new AuthorizedClient(accessToken.getAsString());
@@ -52,16 +53,7 @@ public class AuthorizationPoint {
     /**
      * @return response body from the request for the "authorization code" (See Oauth2 authorization using "authorization code")
      */
-    private String responseBodyFromTokenRequest(String code, String clientId) {
-        String secretCode = "";
-        System.out.println("Enter the secret code");
-        System.out.print("> ");
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        try {
-            secretCode = br.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private String responseBodyFromTokenRequest(String code, String clientId, String secretCode) {
         HttpRequest request = HttpRequest.newBuilder()
             .header("Content-Type", "application/x-www-form-urlencoded")
             .header("Authorization", "Basic " + Base64.getEncoder()

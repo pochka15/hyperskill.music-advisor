@@ -1,8 +1,7 @@
-apply plugin: 'java'
 apply plugin: 'application'
 
 group 'pochka15'
-version '1.0-SNAPSHOT'
+version '1.0'
 sourceCompatibility = 11
 mainClassName = 'pochka15.Main'
 

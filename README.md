@@ -8,12 +8,20 @@ I is a [hyperskill.org] project that was made to learn how to work with spotify'
 ## How to launch
 
 ```shell script
-./gradlew run
+./gradlew run --console=plain --args='-page 2'
 ```
 Hope it works 😅
 
+**Available arguments**
+
+- **-access *nameOfAccessServer*** - path of the access server, https://accounts.spotify.com by default
+- **-resource *nameOfResourceServer*** - path of the resource server, https://api.spotify.com by default
+- **-page *numberOfItems*** - number of items rendered on a page, 5 by default
+- **-clientId *clientId*** - the id of the spotify's client, 60340c6859bf48dfbecd3b2d8f80b69a by default
+- **-clientSecret *clientSecret*** - the client's secret code, 3fc7a79f20d740e0b08489f6f89d6b04 by default
+
 ## Workflow example
 
-![screenshot](images/screenShot.png)
+![screenshot](images/screen.png)
 
 [hyperskill.org]: https://hyperskill.org/
