@@ -1,10 +1,10 @@
 package pochka15.spotify;
 
-import pochka15.authorization.AuthorizedClient;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import pochka15.authorization.AuthorizedClient;
 
 import java.io.IOException;
 import java.net.URI;

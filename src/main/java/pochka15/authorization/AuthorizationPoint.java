@@ -3,9 +3,7 @@ package pochka15.authorization;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -25,7 +23,7 @@ public class AuthorizationPoint {
     }
 
     /**
-     * @param clientId the id of the client that will be authorized
+     * @param clientId   the id of the client that will be authorized
      * @param secretCode the client's secret code to access spotify's api
      * @throws AuthorizationFail if something went wrong during the Oauth2 authorization
      */
