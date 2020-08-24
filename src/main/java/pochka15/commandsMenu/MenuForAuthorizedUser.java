@@ -12,12 +12,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
  * Command-line menu from which there could be executed pre-build commands
  */
 public class MenuForAuthorizedUser {
+    private final Map<String, CommandWithoutArgsAvailableForAuthorizedUser> availableCommandsWithoutArguments;
     private final Map<String, CommandAvailableForAuthorizedClient> availableCommands;
 
     /**
@@ -30,39 +32,38 @@ public class MenuForAuthorizedUser {
     public MenuForAuthorizedUser(SpotifyApi spotifyApi,
                                  TextPagesPrinter textPagesPrinter,
                                  Function<List<? extends PageItem>, List<TextPage>> itemsToPagesFunction) {
-        availableCommands = Map.of(
-//            Commands that enter this menu after execution
-            "new", new EntersThisMenuAfterExecution(
+        final CommandWithoutArgsAvailableForAuthorizedUser helpCommand = (client) -> {
+            availableCommandsWithoutArguments()
+                .forEach((name, consumer) -> System.out.println(name));
+            availableCommands()
+                .forEach((name, command) -> System.out.println(name + " _playlistsCategoryName_"));
+        };
+
+
+        availableCommandsWithoutArguments = Map.of(
+            "new", new EntersThisMenuAfterExecutionWithoutArgs(
                 new NewCm(spotifyApi, textPagesPrinter, itemsToPagesFunction)),
 
-            "featured", new EntersThisMenuAfterExecution(
+            "featured", new EntersThisMenuAfterExecutionWithoutArgs(
                 new FeaturedCm(spotifyApi, textPagesPrinter, itemsToPagesFunction)),
 
-            "playlists", new EntersThisMenuAfterExecution(
-                new PlaylistsCm(spotifyApi, textPagesPrinter, itemsToPagesFunction)),
-
-            "categories", new EntersThisMenuAfterExecution(
+            "categories", new EntersThisMenuAfterExecutionWithoutArgs(
                 new CategoriesCm(spotifyApi, textPagesPrinter, itemsToPagesFunction)),
 
-            "prev", new EntersThisMenuAfterExecution(
-                (argument, authorizedClient1) -> textPagesPrinter.printPreviousPage()),
+            "prev", new EntersThisMenuAfterExecutionWithoutArgs(
+                (authorizedClient1) -> textPagesPrinter.printPreviousPage()),
 
-            "next", new EntersThisMenuAfterExecution(
-                ((argument, authorizedClient1) -> textPagesPrinter.printNextPage())),
+            "next", new EntersThisMenuAfterExecutionWithoutArgs(
+                ((authorizedClient1) -> textPagesPrinter.printNextPage())),
 
-            "help", new EntersThisMenuAfterExecution(
-                ((argument, client) -> availableCommands()
-                    .forEach((name, consumer) -> System.out.println(name)))),
-
-
-//            Commands that just execute
-            "exit", (argument, authorizedClient1) -> {
+            "help", new EntersThisMenuAfterExecutionWithoutArgs(
+                helpCommand),
+            "exit", (authorizedClient1) -> {
             }
         );
-    }
 
-    private Map<String, CommandAvailableForAuthorizedClient> availableCommands() {
-        return availableCommands;
+        availableCommands = Map.of("playlists", new EntersThisMenuAfterExecution(
+            new PlaylistsCm(spotifyApi, textPagesPrinter, itemsToPagesFunction)));
     }
 
     public void enter(AuthorizedClient client) {
@@ -80,14 +81,40 @@ public class MenuForAuthorizedUser {
             e.printStackTrace();
         }
 
-        final CommandAvailableForAuthorizedClient enteredCommand = availableCommands.get(commandName);
-        if (enteredCommand != null) enteredCommand.execute(commandArgument, client);
-        else {
-            System.out.println("Unknown command entered");
-            enter(client);
+        if (commandArgument.isBlank()) {
+            scannedCommandWithoutArgs(commandName).execute(client);
+        } else {
+            scannedCommand(commandName).execute(commandArgument, client);
         }
     }
 
+    private Map<String, CommandWithoutArgsAvailableForAuthorizedUser> availableCommandsWithoutArguments() {
+        return availableCommandsWithoutArguments;
+    }
+
+    private Map<String, CommandAvailableForAuthorizedClient> availableCommands() {
+        return availableCommands;
+    }
+
+    private CommandAvailableForAuthorizedClient scannedCommand(String commandName) {
+        CommandAvailableForAuthorizedClient enteredCommand
+            = availableCommands.get(commandName);
+        return Objects.requireNonNullElseGet(
+            enteredCommand,
+            () -> new EntersThisMenuAfterExecution(
+                (arg, authorizedClient) -> System.out.println("Unknown command entered")));
+    }
+
+    private CommandWithoutArgsAvailableForAuthorizedUser scannedCommandWithoutArgs(String commandName) {
+        CommandWithoutArgsAvailableForAuthorizedUser enteredCommandWithoutArgs
+            = availableCommandsWithoutArguments.get(commandName);
+        return Objects.requireNonNullElseGet(
+            enteredCommandWithoutArgs,
+            () -> new EntersThisMenuAfterExecutionWithoutArgs(
+                authorizedClient -> System.out.println("Unknown command entered")));
+    }
+
+    // Decorator for the CommandAvailableForAuthorizedClient
     private class EntersThisMenuAfterExecution implements CommandAvailableForAuthorizedClient {
         private final CommandAvailableForAuthorizedClient other;
 
@@ -98,6 +125,21 @@ public class MenuForAuthorizedUser {
         @Override
         public void execute(String args, AuthorizedClient authorizedClient) {
             other.execute(args, authorizedClient);
+            enter(authorizedClient);
+        }
+    }
+
+    // Not the best name but it's a decorator for the CommandWithoutArgsAvailableForAuthorizedUser
+    private class EntersThisMenuAfterExecutionWithoutArgs implements CommandWithoutArgsAvailableForAuthorizedUser {
+        private final CommandWithoutArgsAvailableForAuthorizedUser other;
+
+        public EntersThisMenuAfterExecutionWithoutArgs(CommandWithoutArgsAvailableForAuthorizedUser other) {
+            this.other = other;
+        }
+
+        @Override
+        public void execute(AuthorizedClient authorizedClient) {
+            other.execute(authorizedClient);
             enter(authorizedClient);
         }
     }

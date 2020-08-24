@@ -12,7 +12,7 @@ import java.util.function.Function;
 /**
  * Command that prints a list of all available categories on Spotify (just their names);
  */
-public class CategoriesCm implements CommandAvailableForAuthorizedClient {
+public class CategoriesCm implements CommandWithoutArgsAvailableForAuthorizedUser {
     private final SpotifyApi spotifyApi;
     private final TextPagesPrinter textPagesPrinter;
     private final Function<List<? extends PageItem>, List<TextPage>> itemsToPagesFunction;
@@ -26,11 +26,10 @@ public class CategoriesCm implements CommandAvailableForAuthorizedClient {
     /**
      * Print a list of all available categories on Spotify (just their names).
      *
-     * @param args             not used
      * @param authorizedClient client which executes this command
      */
     @Override
-    public void execute(String args, AuthorizedClient authorizedClient) {
+    public void execute(AuthorizedClient authorizedClient) {
         textPagesPrinter.reloadPages(itemsToPagesFunction.apply(spotifyApi.musicCategories(authorizedClient)));
         textPagesPrinter.printNextPage();
     }

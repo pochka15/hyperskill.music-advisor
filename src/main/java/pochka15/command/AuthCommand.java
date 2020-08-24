@@ -4,12 +4,10 @@ import pochka15.authorization.AuthorizationFail;
 import pochka15.authorization.AuthorizationPoint;
 import pochka15.commandsMenu.MenuForAuthorizedUser;
 
-import java.util.function.Consumer;
-
 /**
  * Command that obtains an authorized user and enters the menu for this user.
  */
-public class AuthCommand implements Consumer<String> {
+public class AuthCommand implements CommandWithoutArgs {
     private final AuthorizationPoint authPoint;
     private final MenuForAuthorizedUser menuForAuthorizedUser;
     private final String clientId;
@@ -27,11 +25,9 @@ public class AuthCommand implements Consumer<String> {
 
     /**
      * Obtain an authorized user and enters the menu for this user.
-     *
-     * @param argument not used
      */
     @Override
-    public void accept(String argument) {
+    public void execute() {
         try {
             menuForAuthorizedUser.enter(authPoint.getAuthorizedClient(clientId, clientSecret));
         } catch (AuthorizationFail authorizationFail) {

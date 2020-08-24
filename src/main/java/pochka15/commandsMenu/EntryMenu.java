@@ -1,36 +1,35 @@
 package pochka15.commandsMenu;
 
 import pochka15.command.AuthCommand;
+import pochka15.command.CommandWithoutArgs;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Map;
-import java.util.function.Consumer;
 
 /**
  * Command-line menu from which there could be executed pre-build commands
  */
 public class EntryMenu {
-    private final Map<String, Consumer<String>> availableCommands;
+    private final Map<String, CommandWithoutArgs> availableCommands;
 
     /**
      * @param authCommand command that will be added to the list of menu's available commands
      */
     public EntryMenu(AuthCommand authCommand) {
-        final Consumer<String> commandThatNeedsAuthorization = args ->
-            System.out.println("Please, provide access for application.");
-        availableCommands = Map.of(
-//            Commands that enter this menu after execution
-            "new", commandThatNeedsAuthorization.andThen(s -> enter()),
-            "categories", commandThatNeedsAuthorization.andThen(s -> enter()),
-            "featured", commandThatNeedsAuthorization.andThen(s -> enter()),
-            "playlists", commandThatNeedsAuthorization.andThen(s -> enter()),
-            "help", ((Consumer<String>) s -> availableCommands().forEach(
-                (commandName, consumer) -> System.out.println(commandName))).andThen(s -> enter()),
+        // Command that needs authorization and enters this menu after the execution
+        final CommandWithoutArgs preconfiguredCommand =
+            new EntersThisMenuAfterExecution(() -> System.out.println("Please, provide access for application."));
 
-//            Commands that just execute
-            "exit", args -> {
+        availableCommands = Map.of(
+            "new", preconfiguredCommand,
+            "categories", preconfiguredCommand,
+            "featured", preconfiguredCommand,
+            "playlists", preconfiguredCommand,
+            "help", new EntersThisMenuAfterExecution(() -> availableCommands()
+                .forEach((commandName, consumer) -> System.out.println(commandName))),
+            "exit", () -> {
             },
             "auth", authCommand
         );
@@ -46,15 +45,29 @@ public class EntryMenu {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Consumer<String> enteredCommand = availableCommands.get(commandName);
-        if (enteredCommand != null) enteredCommand.accept("");
+        CommandWithoutArgs enteredCommand = availableCommands.get(commandName);
+        if (enteredCommand != null) enteredCommand.execute();
         else {
             System.out.println("Unknown command entered");
             enter();
         }
     }
 
-    private Map<String, Consumer<String>> availableCommands() {
+    private Map<String, CommandWithoutArgs> availableCommands() {
         return availableCommands;
+    }
+
+    private class EntersThisMenuAfterExecution implements CommandWithoutArgs {
+        private final CommandWithoutArgs command;
+
+        public EntersThisMenuAfterExecution(CommandWithoutArgs command) {
+            this.command = command;
+        }
+
+        @Override
+        public void execute() {
+            command.execute();
+            enter();
+        }
     }
 }
