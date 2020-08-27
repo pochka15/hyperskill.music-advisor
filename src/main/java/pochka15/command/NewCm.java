@@ -4,7 +4,7 @@ import pochka15.authorization.AuthorizedClient;
 import pochka15.pages.PageItem;
 import pochka15.pages.TextPage;
 import pochka15.pages.TextPagesPrinter;
-import pochka15.spotify.SpotifyApi;
+import pochka15.spotify.MusicAdvisorApi;
 
 import java.util.List;
 import java.util.function.Function;
@@ -13,13 +13,13 @@ import java.util.function.Function;
  * A command that prints a list of new albums with artists and links on Spotify;
  */
 public class NewCm implements CommandWithoutArgsAvailableForAuthorizedUser {
-    private final SpotifyApi spotifyApi;
+    private final MusicAdvisorApi spotifyApi;
     private final TextPagesPrinter textPagesPrinter;
     private final Function<List<? extends PageItem>, List<TextPage>> itemsToPagesFunction;
 
-    public NewCm(SpotifyApi spotifyApi, TextPagesPrinter textPagesPrinter,
+    public NewCm(MusicAdvisorApi musicAdvisorApi, TextPagesPrinter textPagesPrinter,
                  Function<List<? extends PageItem>, List<TextPage>> itemsToPagesFunction) {
-        this.spotifyApi = spotifyApi;
+        this.spotifyApi = musicAdvisorApi;
         this.textPagesPrinter = textPagesPrinter;
         this.itemsToPagesFunction = itemsToPagesFunction;
     }

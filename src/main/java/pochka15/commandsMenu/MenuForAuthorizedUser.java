@@ -5,7 +5,7 @@ import pochka15.command.*;
 import pochka15.pages.PageItem;
 import pochka15.pages.TextPage;
 import pochka15.pages.TextPagesPrinter;
-import pochka15.spotify.SpotifyApi;
+import pochka15.spotify.MusicAdvisorApi;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,11 +25,11 @@ public class MenuForAuthorizedUser {
     /**
      * Ctor that will configure all the commands of this menu
      *
-     * @param spotifyApi           api that will be provided for commands of this menu
+     * @param musicAdvisorApi      api that will be provided for commands of this menu
      * @param textPagesPrinter     printer that will be provided for commands of this menu
      * @param itemsToPagesFunction function that converts page items to text pages. This "pages builder" will be provided for commands fo this menu
      */
-    public MenuForAuthorizedUser(SpotifyApi spotifyApi,
+    public MenuForAuthorizedUser(MusicAdvisorApi musicAdvisorApi,
                                  TextPagesPrinter textPagesPrinter,
                                  Function<List<? extends PageItem>, List<TextPage>> itemsToPagesFunction) {
         final CommandWithoutArgsAvailableForAuthorizedUser helpCommand = (client) -> {
@@ -42,13 +42,13 @@ public class MenuForAuthorizedUser {
 
         availableCommandsWithoutArguments = Map.of(
             "new", new EntersThisMenuAfterExecutionWithoutArgs(
-                new NewCm(spotifyApi, textPagesPrinter, itemsToPagesFunction)),
+                new NewCm(musicAdvisorApi, textPagesPrinter, itemsToPagesFunction)),
 
             "featured", new EntersThisMenuAfterExecutionWithoutArgs(
-                new FeaturedCm(spotifyApi, textPagesPrinter, itemsToPagesFunction)),
+                new FeaturedCm(musicAdvisorApi, textPagesPrinter, itemsToPagesFunction)),
 
             "categories", new EntersThisMenuAfterExecutionWithoutArgs(
-                new CategoriesCm(spotifyApi, textPagesPrinter, itemsToPagesFunction)),
+                new PrintCategoriesCm(musicAdvisorApi, textPagesPrinter, itemsToPagesFunction)),
 
             "prev", new EntersThisMenuAfterExecutionWithoutArgs(
                 (authorizedClient1) -> textPagesPrinter.printPreviousPage()),
@@ -63,7 +63,7 @@ public class MenuForAuthorizedUser {
         );
 
         availableCommands = Map.of("playlists", new EntersThisMenuAfterExecution(
-            new PlaylistsCm(spotifyApi, textPagesPrinter, itemsToPagesFunction)));
+            new PlaylistsCm(musicAdvisorApi, textPagesPrinter, itemsToPagesFunction)));
     }
 
     public void enter(AuthorizedClient client) {

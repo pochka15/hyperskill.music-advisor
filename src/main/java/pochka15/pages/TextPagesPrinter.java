@@ -8,15 +8,21 @@ import java.util.ListIterator;
  * Very hardcoded and mutable object that is made to render text pages. It keeps in memory the loaded pages and can print pages one by one.
  */
 public class TextPagesPrinter {
+    private final PrintTarget printTarget;
+
     private ListIterator<TextPage> iterator;
     private List<TextPage> loadedPages;
     private boolean isForward = true;
 
-    public TextPagesPrinter() {
+    public TextPagesPrinter(PrintTarget printTarget) {
+        this.printTarget = printTarget;
         this.loadedPages = new ArrayList<>(0);
         this.iterator = loadedPages.listIterator();
     }
 
+    /**
+     * Prints the next page from the loaded pages. Otherwise "No more pages"
+     */
     public void printNextPage() {
         if (iterator.hasNext() && !isForward) {
             iterator.next();
@@ -24,12 +30,15 @@ public class TextPagesPrinter {
         }
         if (iterator.hasNext()) {
             final TextPage next = iterator.next();
-            System.out.println(next + "\n---PAGE " + next.number() + " OF " + loadedPages.size() + "---");
+            printTarget.print(next + "\n---PAGE " + next.number() + " OF " + loadedPages.size() + "---");
         } else {
-            System.out.println("No more pages");
+            printTarget.print("No more pages");
         }
     }
 
+    /**
+     * Prints the previous page from the loaded pages. Otherwise "No more pages"
+     */
     public void printPreviousPage() {
         if (iterator.hasPrevious() && isForward) {
             iterator.previous();
@@ -37,10 +46,10 @@ public class TextPagesPrinter {
         }
         if (iterator.hasPrevious()) {
             final TextPage previous = iterator.previous();
-            System.out.println(previous + "\n---PAGE " + previous.number() + " OF " + loadedPages.size() + "---");
+            printTarget.print(previous + "\n---PAGE " + previous.number() + " OF " + loadedPages.size() + "---");
 
         } else {
-            System.out.println("No more pages");
+            printTarget.print("No more pages");
         }
     }
 

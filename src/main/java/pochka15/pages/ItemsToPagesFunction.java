@@ -11,6 +11,11 @@ import java.util.function.Function;
 public class ItemsToPagesFunction implements Function<List<? extends PageItem>, List<TextPage>> {
     private final int numberOfItemsOnPage;
 
+    /**
+     * ctor
+     *
+     * @param numberOfItemsOnPage should be >= 0
+     */
     public ItemsToPagesFunction(int numberOfItemsOnPage) {
         this.numberOfItemsOnPage = numberOfItemsOnPage;
     }
@@ -25,6 +30,7 @@ public class ItemsToPagesFunction implements Function<List<? extends PageItem>, 
         final Iterator<? extends PageItem> itemsIterator = itemsList.iterator();
         List<TextPage> outPages = new ArrayList<>(numberOfPages);
         int curPageNumber = 1;
+
         for (int i = 0; i < numberOfPages; i++) {
             List<PageItem> pageItems = new ArrayList<>(numberOfItemsOnPage);
             int enteredItemsNumber = 0;

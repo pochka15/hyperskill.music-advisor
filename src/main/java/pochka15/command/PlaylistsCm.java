@@ -5,7 +5,7 @@ import pochka15.pages.PageItem;
 import pochka15.pages.TextPage;
 import pochka15.pages.TextPagesPrinter;
 import pochka15.spotify.Category;
-import pochka15.spotify.SpotifyApi;
+import pochka15.spotify.MusicAdvisorApi;
 
 import java.util.List;
 import java.util.function.Function;
@@ -14,13 +14,13 @@ import java.util.function.Function;
  * A command that prints playlists that were fetched using the provided category
  */
 public class PlaylistsCm implements CommandAvailableForAuthorizedClient {
-    private final SpotifyApi spotifyApi;
+    private final MusicAdvisorApi spotifyApi;
     private final TextPagesPrinter textPagesPrinter;
     private final Function<List<? extends PageItem>, List<TextPage>> itemsToPagesFunction;
 
-    public PlaylistsCm(SpotifyApi spotifyApi, TextPagesPrinter textPagesPrinter,
+    public PlaylistsCm(MusicAdvisorApi musicAdvisorApi, TextPagesPrinter textPagesPrinter,
                        Function<List<? extends PageItem>, List<TextPage>> itemsToPagesFunction) {
-        this.spotifyApi = spotifyApi;
+        this.spotifyApi = musicAdvisorApi;
         this.textPagesPrinter = textPagesPrinter;
         this.itemsToPagesFunction = itemsToPagesFunction;
     }

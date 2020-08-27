@@ -15,12 +15,16 @@ run {
 
 dependencies {
     compile 'com.google.code.gson:gson:+'
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.7.0-RC1'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 jar {
     manifest {
-        attributes 'Main-Class' : 'pochka15.Main'
+        attributes 'Main-Class': 'pochka15.Main'
     }
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }

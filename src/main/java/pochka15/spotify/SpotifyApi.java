@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class SpotifyApi {
+public class SpotifyApi implements MusicAdvisorApi {
     private final URI apiServerPath;
     private final Function<JsonObject, Album> jsonItemToAlbum =
         albumItem -> {

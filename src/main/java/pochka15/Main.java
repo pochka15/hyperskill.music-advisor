@@ -15,7 +15,7 @@ public class Main {
     public static void main(String[] args) {
         final MenuForAuthorizedUser menuForAuthorizedUser =
             new MenuForAuthorizedUser(new SpotifyApi(apiServerPathFromArgs(args)),
-                                      new TextPagesPrinter(),
+                                      new TextPagesPrinter(System.out::println),
                                       new ItemsToPagesFunction(numberOfItemsOnPageFromArgs(args)));
         final AuthCommand authCommand = new AuthCommand(
             new AuthorizationPoint(new ServerThatWaitsForAuthorizationCode(), accessServerPathFromArgs(args)),

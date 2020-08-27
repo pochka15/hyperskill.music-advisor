@@ -23,7 +23,7 @@ public class ServerThatWaitsForAuthorizationCode implements AuthCodeSource {
     /**
      * Wait until the server receives an authorization code
      *
-     * @return
+     * @return the authorization code (see the OAuth2.0 authorization code flow)
      */
     @Override
     public String authorizationCode() {
